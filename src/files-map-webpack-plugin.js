@@ -30,8 +30,21 @@ class FilesMapWebpackPlugin {
     return p.replace(/\\/g, '/');
   }
 
+  // 获取文件扩展名
+  getExt(file) {
+    const defaultExt = 'file';
+
+    if (_.isNil(file)) {
+      return defaultExt;
+    }
+
+    const outputParseResult = path.parse(file);
+
+    return outputParseResult.ext ? outputParseResult.ext.substr(1) : defaultExt;
+  }
+
   apply(compiler) {
-    const { pluginName, options, getFileEntry, formatPath } = this;
+    const { pluginName, options, getFileEntry, formatPath, getExt } = this;
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
       const { options: compilationOptions, chunks } = compilation;
@@ -50,7 +63,16 @@ class FilesMapWebpackPlugin {
         } = chunk;
         const entry = getFileEntry(entryModule, context);
 
-        map[name || id] = {
+        // 获取文件扩展名
+        const outputFile = (files && files.length > 0) ? formatPath(files[0]) : undefined;
+        const ext = getExt(outputFile);
+
+        if (!_.isPlainObject(map[ext])) {
+          map[ext] = {};
+        }
+
+        // 添加到映射
+        map[ext][name || id] = {
           entry: entry ? formatPath(entry) : undefined,
           output: (files && files.length > 0) ? formatPath(files[0]) : undefined
         };
