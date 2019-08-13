@@ -46,8 +46,8 @@ class FilesMapWebpackPlugin {
   apply(compiler) {
     const { pluginName, options, getFileEntry, formatPath, getExt } = this;
 
-    compiler.hooks.done.tap(`${ pluginName }-done`, async function(stats) {
-      const { options: compilationOptions, chunks: compilationChunks } = stats.compilation;
+    compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
+      const { options: compilationOptions, chunks: compilationChunks } = compilation;
       const { output, context } = compilationOptions;
       const map = {}; // 输出映射
       const chunks = {};
