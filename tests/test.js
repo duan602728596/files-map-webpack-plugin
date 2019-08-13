@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import webpack from 'webpack';
 import { expect } from 'chai';
+import webpack from 'webpack';
 import webpackConfig from './webpack.config';
 
 function build() {
@@ -31,10 +31,10 @@ describe('files-map-webpack-plugin', function() {
 
     // 判断name是否正确
     const filesMap = require('./dist/filesMap.json');
-    const { map } = filesMap;
+    const { js } = filesMap.map;
 
-    expect('module0' in map).to.be.true;
-    expect('module1' in map).to.be.true;
-    expect('module2' in map).to.be.true;
+    expect('module0' in js).to.be.true;
+    expect('module1' in js).to.be.true;
+    expect('module2' in js).to.be.true;
   });
 });
