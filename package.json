@@ -3,6 +3,12 @@
   "version": "0.0.1",
   "description": "webpack入口文件映射。",
   "main": "cjs.js",
+  "homepage": "https://github.com/duan602728596/files-map-webpack-plugin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:duan602728596/files-map-webpack-plugin.git"
+  },
   "scripts": {
     "dev": "rimraf example/dist && webpack",
     "build": "rimraf lib && babel src --out-dir lib",
