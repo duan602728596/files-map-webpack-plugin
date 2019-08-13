@@ -8,7 +8,7 @@ class FilesMapWebpackPlugin {
     const { pluginName } = this;
 
     // eslint-disable-next-line require-await
-    compiler.hooks.afterEmit.tapPromise(`${ pluginName }-apply`, async function(compilation) {
+    compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
       const { options, chunks } = compilation;
       // 文件目录和入口（绝对路径）
       const {
