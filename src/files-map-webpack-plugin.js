@@ -43,13 +43,14 @@ class FilesMapWebpackPlugin {
 
       for (const chunk of chunks) {
         const {
+          name,  // 模块名称
           id,    // 模块id
           files, // 模块输出路径
           entryModule
         } = chunk;
         const entry = getFileEntry(entryModule, context);
 
-        map[id] = {
+        map[name || id] = {
           entry: entry ? formatPath(entry) : undefined,
           output: (files && files.length > 0) ? formatPath(files[0]) : undefined
         };

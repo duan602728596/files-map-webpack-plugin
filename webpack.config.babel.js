@@ -4,7 +4,7 @@ import FilesMapWebpackPlugin from './src/files-map-webpack-plugin';
 const dir = path.join(__dirname, 'example');
 
 export default {
-  mode: 'development',
+  mode: 'production',
   entry: {
     index: [path.join(dir, 'src/index.js')],
     text: [path.join(dir, 'src/text.js')]
