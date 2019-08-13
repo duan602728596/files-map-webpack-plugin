@@ -25,8 +25,13 @@ class FilesMapWebpackPlugin {
     return path.relative(context, dependencies[0]?.request || dependencies[0]?.originModule?.request);
   }
 
+  // 重写文件路径
+  formatPath(p) {
+    return p.replace(/\\/g, '/');
+  }
+
   apply(compiler) {
-    const { pluginName, options, getFileEntry } = this;
+    const { pluginName, options, getFileEntry, formatPath } = this;
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
       const { options: compilationOptions, chunks } = compilation;
@@ -45,8 +50,8 @@ class FilesMapWebpackPlugin {
         const entry = getFileEntry(entryModule, context);
 
         map[id] = {
-          entry,
-          output: files[0]
+          entry: entry ? formatPath(entry) : undefined,
+          output: (files && files.length > 0) ? formatPath(files[0]) : undefined
         };
       }
 
