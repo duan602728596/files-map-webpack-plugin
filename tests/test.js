@@ -24,8 +24,17 @@ describe('files-map-webpack-plugin', function() {
   it('webpack build fileMap.json', async function() {
     await build();
 
+    // 判断文件是否存在
     const hasFile = fs.existsSync(path.join(webpackConfig.output.path, 'filesMap.json'));
 
     expect(hasFile).to.be.true;
+
+    // 判断name是否正确
+    const filesMap = require('./dist/filesMap.json');
+    const { map } = filesMap;
+
+    expect('module0' in map).to.be.true;
+    expect('module1' in map).to.be.true;
+    expect('module2' in map).to.be.true;
   });
 });
