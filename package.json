@@ -1,6 +1,6 @@
 {
   "name": "@bbkkbkk/files-map-webpack-plugin",
-  "version": "0.0.0-alpha.0",
+  "version": "0.0.1",
   "description": "webpack入口文件映射。",
   "main": "cjs.js",
   "scripts": {
