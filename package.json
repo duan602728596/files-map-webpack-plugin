@@ -1,7 +1,12 @@
 {
   "name": "@bbkkbkk/files-map-webpack-plugin",
+  "version": "0.0.0-alpha.0",
+  "description": "webpack入口文件映射。",
+  "main": "cjs.js",
   "scripts": {
-    "start": "webpack"
+    "dev": "rimraf example/dist && webpack",
+    "build": "rimraf lib && babel src --out-dir lib",
+    "eslint": "eslint ./ --fix"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.5.5",
@@ -10,6 +15,7 @@
     "lodash": "^4.17.15"
   },
   "devDependencies": {
+    "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.4",
     "@babel/plugin-proposal-optional-chaining": "^7.2.0",
