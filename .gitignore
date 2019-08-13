@@ -11,6 +11,6 @@ yarn-error.log
 .idea
 
 # dist
-example-dist
+example/dist
 
 .DS_Store

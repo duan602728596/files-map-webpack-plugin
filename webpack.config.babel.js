@@ -1,15 +1,17 @@
 import path from 'path';
-import FilesMapWebpackPlugin from './src/index';
+import FilesMapWebpackPlugin from './src/files-map-webpack-plugin';
+
+const dir = path.join(__dirname, 'example');
 
 export default {
   mode: 'development',
   entry: {
-    index: [path.join(__dirname, 'example/index.js')],
-    text: [path.join(__dirname, 'example/text.js')]
+    index: [path.join(dir, 'src/index.js')],
+    text: [path.join(dir, 'src/text.js')]
   },
   output: {
-    path: path.join(__dirname, 'example-dist'),
-    filename: '[name].build.js'
+    path: path.join(dir, 'dist'),
+    filename: '[name].[chunkhash:5].js'
   },
   plugins: [
     new FilesMapWebpackPlugin()

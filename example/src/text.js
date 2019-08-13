@@ -1,6 +1,6 @@
-import output from './output';
+import output from './utils/output';
 
-const text = 'My name is Lilei.';
+const text = 'This is text module.';
 
 output(text);
 
