@@ -46,15 +46,16 @@ class FilesMapWebpackPlugin {
   apply(compiler) {
     const { pluginName, options, getFileEntry, formatPath, getExt } = this;
 
-    compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
-      const { options: compilationOptions, chunks } = compilation;
+    compiler.hooks.done.tap(`${ pluginName }-done`, async function(stats) {
+      const { options: compilationOptions, chunks: compilationChunks } = stats.compilation;
       const { output, context } = compilationOptions;
-      const map = {};
+      const map = {}; // 输出映射
+      const chunks = {};
 
       // 输出获取文件映射
       const outputDir = options.path ?? output.path;
 
-      for (const chunk of chunks) {
+      for (const chunk of compilationChunks) {
         const {
           name,  // 模块名称
           id,    // 模块id
@@ -62,26 +63,34 @@ class FilesMapWebpackPlugin {
           entryModule
         } = chunk;
         const entry = getFileEntry(entryModule, context);
+        const key = name || id;
 
-        // 获取文件扩展名
-        const outputFile = (files && files.length > 0) ? formatPath(files[0]) : undefined;
-        const ext = getExt(outputFile);
+        chunks[key] = [];
 
-        if (!_.isPlainObject(map[ext])) {
-          map[ext] = {};
+        if (files && files.length > 0) {
+          // 循环files
+          for (const file of files) {
+            chunks[key].push(formatPath(file));
+
+            // 获取文件扩展名
+            const ext = getExt(file);
+
+            if (!_.isPlainObject(map[ext])) {
+              map[ext] = {};
+            }
+
+            // 添加到映射
+            map[ext][key] = {
+              entry: entry ? formatPath(entry) : undefined,
+              output: formatPath(file)
+            };
+          }
         }
-
-        // 添加到映射
-        map[ext][name || id] = {
-          entry: entry ? formatPath(entry) : undefined,
-          output: (files && files.length > 0) ? formatPath(files[0]) : undefined
-        };
       }
 
-      // 输出文件
       await fse.writeJSON(
         path.join(outputDir, options.name),
-        { map },
+        { map, chunks },
         { spaces: 2 }
       );
     });
