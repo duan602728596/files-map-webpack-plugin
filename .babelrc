@@ -6,7 +6,7 @@
         "targets": {
           "browsers": ["node 9"]
         },
-        "debug": true,
+        "debug": false,
         "modules": "commonjs",
         "useBuiltIns": "usage",
         "corejs": 3
