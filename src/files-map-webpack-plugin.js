@@ -25,7 +25,7 @@ class FilesMapWebpackPlugin {
     // 文件路径
     const request = entryModule.request          // webpack5
       || dependencies[0]?.request                // webpack4
-      || dependencies[0]?.originModule?.request; // webpack4
+      || dependencies[0]?.originModule?.request; // webpack4 async-module
 
     return path.relative(context, request);
   }
@@ -58,8 +58,8 @@ class FilesMapWebpackPlugin {
         chunkGraph // webpack5
       } = compilation;
       const { output, context } = compilationOptions;
-      const map = {}; // 输出映射
-      const chunks = {};
+      const map = {};    // 输出映射
+      const chunks = {}; // 输出的模块
 
       // 输出获取文件映射
       const outputDir = options.path ?? output.path;
@@ -71,20 +71,25 @@ class FilesMapWebpackPlugin {
           files  // 模块输出路径
         } = chunk;
 
+        // 获取模块的信息
         const chunkFiles = files ? (Array.isArray(files) ? files : Array.from(files)) : [];
+
+        // 获取入口文件
         const entryModule = 'entryModule' in chunk
-          ? chunk.entryModule // webpack4
+          ? chunk.entryModule                               // webpack4
           : chunkGraph.getChunkEntryModulesIterable(chunk); // webpack5
+
+        // 格式化入口文件
         const entry = getFileEntry(entryModule, context);
+
+        // 模块id
         const key = name || id;
+
+        chunks[key] = [];
 
         if (chunkFiles && chunkFiles.length > 0) {
           // 循环files
           for (const file of chunkFiles) {
-            if (!chunks[key]) {
-              chunks[key] = [];
-            }
-
             chunks[key].push(formatPath(file));
 
             // 获取文件扩展名
