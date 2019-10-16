@@ -22,7 +22,12 @@ class FilesMapWebpackPlugin {
       return undefined;
     }
 
-    return path.relative(context, dependencies[0]?.request || dependencies[0]?.originModule?.request);
+    // 文件路径
+    const request = entryModule.request          // webpack5
+      || dependencies[0]?.request                // webpack4
+      || dependencies[0]?.originModule?.request; // webpack4
+
+    return path.relative(context, request);
   }
 
   // 重写文件路径
@@ -47,7 +52,11 @@ class FilesMapWebpackPlugin {
     const { pluginName, options, getFileEntry, formatPath, getExt } = this;
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
-      const { options: compilationOptions, chunks: compilationChunks } = compilation;
+      const {
+        options: compilationOptions,
+        chunks: compilationChunks,
+        chunkGraph // webpack5
+      } = compilation;
       const { output, context } = compilationOptions;
       const map = {}; // 输出映射
       const chunks = {};
@@ -59,17 +68,23 @@ class FilesMapWebpackPlugin {
         const {
           name,  // 模块名称
           id,    // 模块id
-          files, // 模块输出路径
-          entryModule
+          files  // 模块输出路径
         } = chunk;
+
+        const chunkFiles = files ? (Array.isArray(files) ? files : Array.from(files)) : [];
+        const entryModule = 'entryModule' in chunk
+          ? chunk.entryModule // webpack4
+          : chunkGraph.getChunkEntryModulesIterable(chunk); // webpack5
         const entry = getFileEntry(entryModule, context);
         const key = name || id;
 
-        chunks[key] = [];
-
-        if (files && files.length > 0) {
+        if (chunkFiles && chunkFiles.length > 0) {
           // 循环files
-          for (const file of files) {
+          for (const file of chunkFiles) {
+            if (!chunks[key]) {
+              chunks[key] = [];
+            }
+
             chunks[key].push(formatPath(file));
 
             // 获取文件扩展名
