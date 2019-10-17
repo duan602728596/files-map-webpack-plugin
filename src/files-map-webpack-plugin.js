@@ -27,6 +27,10 @@ class FilesMapWebpackPlugin {
       || dependencies[0]?.request                // webpack4
       || dependencies[0]?.originModule?.request; // webpack4 async-module
 
+    if (!request) {
+      return undefined;
+    }
+
     return path.relative(context, request);
   }
 
