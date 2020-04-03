@@ -16,8 +16,6 @@
     "eslint": "eslint ./ --fix"
   },
   "dependencies": {
-    "@babel/runtime-corejs3": "^7.9.2",
-    "core-js": "^3.6.4",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
