@@ -18,6 +18,7 @@ yarn-error.log
 # packages
 src
 tests
+test
 example
 .babelrc
 babel.config.js
