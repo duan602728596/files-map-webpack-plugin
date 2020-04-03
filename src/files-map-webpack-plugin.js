@@ -60,7 +60,11 @@ class FilesMapWebpackPlugin {
 
     // webpack4
     if (mkdirp) {
-      return mkdirp;
+      if (util.types.isPromise(mkdirp)) {
+        return mkdirp;
+      } else {
+        return util.promisify(mkdirp);
+      }
     }
 
     // webpack5
@@ -151,7 +155,6 @@ class FilesMapWebpackPlugin {
       }
 
       // 判断文件夹是否存在并写入文件
-      // webpack的文件输出系统
       const { outputFileSystem } = compiler;
       const writeFilePromise = outputFileSystem.promises
         ? outputFileSystem.promises.writeFile
