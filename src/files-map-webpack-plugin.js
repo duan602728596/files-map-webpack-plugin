@@ -152,7 +152,9 @@ class FilesMapWebpackPlugin {
       // 判断文件夹是否存在并写入文件
       // webpack的文件输出系统
       const { outputFileSystem } = compiler;
-      const writeFilePromise = util.promisify(outputFileSystem.writeFile);
+      const writeFilePromise = outputFileSystem.promises
+        ? outputFileSystem.promises.writeFile
+        : util.promisify(outputFileSystem.writeFile);
       const mkdirPromise = createMkdirFunc(outputFileSystem);
 
       await mkdirPromise(outputDir);
