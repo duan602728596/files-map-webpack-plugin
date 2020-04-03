@@ -90,6 +90,7 @@ class FilesMapWebpackPlugin {
   }
 
   apply(compiler) {
+    const _this = this;
     const { pluginName, options, getFileEntry, formatPath, getExt, createMkdirFunc } = this;
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
@@ -155,7 +156,7 @@ class FilesMapWebpackPlugin {
       const writeFilePromise = outputFileSystem.promises
         ? outputFileSystem.promises.writeFile
         : util.promisify(outputFileSystem.writeFile);
-      const mkdirPromise = createMkdirFunc(outputFileSystem);
+      const mkdirPromise = createMkdirFunc.call(_this, outputFileSystem);
 
       await mkdirPromise(outputDir);
       await writeFilePromise(
