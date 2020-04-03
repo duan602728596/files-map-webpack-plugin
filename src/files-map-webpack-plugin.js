@@ -1,5 +1,5 @@
+import util from 'util';
 import path from 'path';
-import fse from 'fs-extra';
 import _ from 'lodash';
 
 class FilesMapWebpackPlugin {
@@ -54,6 +54,10 @@ class FilesMapWebpackPlugin {
 
   apply(compiler) {
     const { pluginName, options, getFileEntry, formatPath, getExt } = this;
+    const { outputFileSystem } = compiler; // webpack的文件输出系统
+    const { mkdirp, mkdir, writeFile } = outputFileSystem;
+    const writeFilePromise = util.promisify(writeFile);
+    const mkdirPromise = mkdirp ?? util.promisify(mkdir);
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
       const {
@@ -112,10 +116,11 @@ class FilesMapWebpackPlugin {
         }
       }
 
-      await fse.writeJSON(
+      // 判断文件夹是否存在并写入文件
+      await mkdirPromise(outputDir);
+      await writeFilePromise(
         path.join(outputDir, options.name),
-        { map, chunks },
-        { spaces: 2 }
+        JSON.stringify({ map, chunks }, null, 2)
       );
     });
   }
