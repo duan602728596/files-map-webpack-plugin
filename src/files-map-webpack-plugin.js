@@ -94,8 +94,7 @@ class FilesMapWebpackPlugin {
 
     // webpack的文件输出系统
     const { outputFileSystem } = compiler;
-    const { writeFile } = outputFileSystem;
-    const writeFilePromise = util.promisify(writeFile);
+    const writeFilePromise = util.promisify(outputFileSystem.writeFile);
     const mkdirPromise = this.createMkdirFunc(outputFileSystem);
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
