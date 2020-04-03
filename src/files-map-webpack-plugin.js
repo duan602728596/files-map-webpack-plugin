@@ -39,6 +39,43 @@ class FilesMapWebpackPlugin {
     return p.replace(/\\/g, '/');
   }
 
+  // 判断文件是否存在
+  createAccessFunc(access) {
+    const accessPromise = util.promisify(access);
+
+    return async function(f) {
+      try {
+        await accessPromise(f);
+
+        return true;
+      } catch (err) {
+        return false;
+      }
+    };
+  }
+
+  // 判断文件是否存在并创建目录
+  createMkdirFunc(outputFileSystem) {
+    const { mkdirp, mkdir, access } = outputFileSystem;
+
+    // webpack4
+    if (mkdirp) {
+      return mkdirp;
+    }
+
+    // webpack5
+    const accessPromise = this.createAccessFunc(access);
+    const mkdirPromise = util.promisify(mkdir);
+
+    return async function(dir) {
+      const fileExists = await accessPromise(dir);
+
+      if (!fileExists) {
+        mkdirPromise(dir);
+      }
+    };
+  }
+
   // 获取文件扩展名
   getExt(file) {
     const defaultExt = 'file';
@@ -54,10 +91,12 @@ class FilesMapWebpackPlugin {
 
   apply(compiler) {
     const { pluginName, options, getFileEntry, formatPath, getExt } = this;
-    const { outputFileSystem } = compiler; // webpack的文件输出系统
-    const { mkdirp, mkdir, writeFile } = outputFileSystem;
+
+    // webpack的文件输出系统
+    const { outputFileSystem } = compiler;
+    const { writeFile } = outputFileSystem;
     const writeFilePromise = util.promisify(writeFile);
-    const mkdirPromise = mkdirp ?? util.promisify(mkdir);
+    const mkdirPromise = this.createMkdirFunc(outputFileSystem);
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
       const {
@@ -83,9 +122,9 @@ class FilesMapWebpackPlugin {
         const chunkFiles = files ? (Array.isArray(files) ? files : Array.from(files)) : [];
 
         // 获取入口文件
-        const entryModule = ('entryModule' in chunk)
-          ? chunk.entryModule                               // webpack4
-          : chunkGraph.getChunkEntryModulesIterable(chunk); // webpack5
+        const entryModule = chunkGraph
+          ? chunkGraph.getChunkEntryModulesIterable(chunk) // webpack5
+          : chunk.entryModule;                             // webpack4
 
         // 格式化入口文件
         const entry = getFileEntry(entryModule, context);
