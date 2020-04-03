@@ -20,8 +20,10 @@ src
 tests
 example
 .babelrc
+babel.config.js
 .editorconfig
 .eslintrc.yml
+.eslintrc.js
 .lintstagedrc.yml
 webpack.config.babel.js
 
