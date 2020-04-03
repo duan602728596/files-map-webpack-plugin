@@ -83,7 +83,7 @@ class FilesMapWebpackPlugin {
         const chunkFiles = files ? (Array.isArray(files) ? files : Array.from(files)) : [];
 
         // 获取入口文件
-        const entryModule = 'entryModule' in chunk
+        const entryModule = ('entryModule' in chunk)
           ? chunk.entryModule                               // webpack4
           : chunkGraph.getChunkEntryModulesIterable(chunk); // webpack5
 
@@ -91,7 +91,7 @@ class FilesMapWebpackPlugin {
         const entry = getFileEntry(entryModule, context);
 
         // 模块id
-        const key = name || id;
+        const key = name ?? id;
 
         chunks[key] = [];
 
