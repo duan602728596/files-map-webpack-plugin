@@ -24,8 +24,8 @@ class FilesMapWebpackPlugin {
 
     // 文件路径
     const request = entryModule.request          // webpack5
-      || dependencies[0]?.request                // webpack4
-      || dependencies[0]?.originModule?.request; // webpack4 async-module
+      ?? dependencies[0]?.request                // webpack4
+      ?? dependencies[0]?.originModule?.request; // webpack4 async-module
 
     if (!request) {
       return undefined;
