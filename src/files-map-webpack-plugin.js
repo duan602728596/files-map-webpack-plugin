@@ -1,11 +1,11 @@
 import util from 'util';
 import path from 'path';
-import _ from 'lodash';
+import { isNil, isPlainObject } from './types';
 
 class FilesMapWebpackPlugin {
   constructor(options = {}) {
     // 插件配置
-    this.options = _.merge({
+    this.options = Object.assign({
       path: undefined,      // 输出目录
       name: 'filesMap.json' // 输出文件名称
     }, options);
@@ -43,7 +43,7 @@ class FilesMapWebpackPlugin {
   getExt(file) {
     const defaultExt = 'file';
 
-    if (_.isNil(file)) {
+    if (isNil(file)) {
       return defaultExt;
     }
 
@@ -103,7 +103,7 @@ class FilesMapWebpackPlugin {
             // 获取文件扩展名
             const ext = getExt(file);
 
-            if (!_.isPlainObject(map[ext])) {
+            if (!isPlainObject(map[ext])) {
               map[ext] = {};
             }
 
