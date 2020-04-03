@@ -34,7 +34,7 @@
     "lint-staged": "^10.1.1",
     "mocha": "^7.1.1",
     "rimraf": "^3.0.2",
-    "webpack": "^4.42.1",
+    "webpack": "^5.0.0-beta.14",
     "webpack-cli": "^3.3.11"
   },
   "peerDependencies": {
