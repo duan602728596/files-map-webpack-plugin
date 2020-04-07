@@ -19,7 +19,10 @@ class FilesMapWebpackPlugin {
     let request = undefined;
 
     for (const entryModule of entryModules) {
-      request = entryModule.request;
+      if (!request) {
+        request = entryModule?.rawRequest
+          ?? entryModule?.rootModule?.rawRequest;
+      }
     }
 
     if (!request) {
