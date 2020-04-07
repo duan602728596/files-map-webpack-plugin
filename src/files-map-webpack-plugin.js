@@ -14,6 +14,21 @@ class FilesMapWebpackPlugin {
     this.pluginName = 'files-map-webpack-plugin';
   }
 
+  // 获取文件入口（webpack5）
+  getFileEntryV5(entryModules, context) {
+    let request = undefined;
+
+    for (const entryModule of entryModules) {
+      request = entryModule.request;
+    }
+
+    if (!request) {
+      return undefined;
+    }
+
+    return path.relative(context, request);
+  }
+
   // 获取文件入口
   getFileEntry(entryModule, context) {
     const dependencies = entryModule?.dependencies ?? [];
@@ -23,8 +38,7 @@ class FilesMapWebpackPlugin {
     }
 
     // 文件路径
-    const request = entryModule.request          // webpack5
-      ?? dependencies[0]?.request                // webpack4
+    const request = dependencies[0]?.request     // webpack4
       ?? dependencies[0]?.originModule?.request; // webpack4 async-module
 
     if (!request) {
@@ -95,7 +109,7 @@ class FilesMapWebpackPlugin {
 
   apply(compiler) {
     const _this = this;
-    const { pluginName, options, getFileEntry, formatPath, getExt, createMkdirFunc } = this;
+    const { pluginName, options, getFileEntry, getFileEntryV5, formatPath, getExt, createMkdirFunc } = this;
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
       const {
@@ -120,13 +134,10 @@ class FilesMapWebpackPlugin {
         // 获取模块的信息
         const chunkFiles = files ? (Array.isArray(files) ? files : Array.from(files)) : [];
 
-        // 获取入口文件
-        const entryModule = chunkGraph
-          ? chunkGraph.getChunkEntryModulesIterable(chunk) // webpack5
-          : chunk.entryModule;                             // webpack4
-
-        // 格式化入口文件
-        const entry = getFileEntry(entryModule, context);
+        // 获取入口文件并格式化入口文件
+        const entry = chunkGraph
+          ? getFileEntryV5(chunkGraph.getChunkEntryModulesIterable(chunk), context) // webpack5
+          : getFileEntry(chunk.entryModule, context);                               // webpack4
 
         // 模块id
         const key = name ?? id;
