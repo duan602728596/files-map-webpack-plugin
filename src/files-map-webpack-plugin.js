@@ -131,7 +131,7 @@ class FilesMapWebpackPlugin {
       await mkdirPromise(outputDir);
       await writeFilePromise(
         path.join(outputDir, options.name),
-        JSON.stringify({ map, chunks }, null, 2)
+        JSON.stringify({ map, chunks, webpackVersion: require('webpack/package.json').version }, null, 2)
       );
     });
   }
