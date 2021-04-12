@@ -26,7 +26,12 @@ module.exports = {
       files: ['*.js', '*.jsx'],
       parser: '@babel/eslint-parser',
       parserOptions: {
-        requireConfigFile: false
+        requireConfigFile: false,
+        babelOptions: {
+          plugins: [
+            '@babel/plugin-proposal-class-properties'
+          ]
+        }
       }
     }
   ],

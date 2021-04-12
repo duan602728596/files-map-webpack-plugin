@@ -1,8 +1,10 @@
 import util from 'util';
 import path from 'path';
-import { isPlainObject, formatPath, getExt } from './utils';
+import { formatPath, getExt } from './utils';
 
 class FilesMapWebpackPlugin {
+  static pluginName = 'files-map-webpack-plugin';
+
   constructor(options = {}) {
     // 插件配置
     this.options = Object.assign({
@@ -11,11 +13,11 @@ class FilesMapWebpackPlugin {
     }, options);
 
     // 插件名称
-    this.pluginName = 'files-map-webpack-plugin';
+    this.pluginName = FilesMapWebpackPlugin.pluginName;
   }
 
-  // 获取文件入口（webpack5）
-  getFileEntryV5(entryModules, context) {
+  // 获取文件入口(webpack5)
+  getFileEntry(entryModules, context) {
     let request = undefined;
 
     for (const entryModule of entryModules) {
@@ -32,8 +34,8 @@ class FilesMapWebpackPlugin {
     return path.relative(context, request);
   }
 
-  // 获取文件入口
-  getFileEntry(entryModule, context) {
+  // 获取文件入口(webpack4)
+  getFileEntryV4(entryModule, context) {
     const dependencies = entryModule?.dependencies ?? [];
 
     if (dependencies.length === 0) {
@@ -87,59 +89,38 @@ class FilesMapWebpackPlugin {
       const fileExists = await accessPromise(dir);
 
       if (!fileExists) {
-        mkdirPromise(dir);
+        await mkdirPromise(dir);
       }
     };
   }
 
   apply(compiler) {
     const _this = this;
-    const { pluginName, options, getFileEntry, getFileEntryV5, createMkdirFunc } = this;
+    const { options, getFileEntryV4, getFileEntry, createMkdirFunc } = this;
 
-    compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
-      const {
-        options: compilationOptions,
-        chunks: compilationChunks,
-        chunkGraph // webpack5
-      } = compilation;
-      const { output, context } = compilationOptions;
+    compiler.hooks.afterEmit.tapPromise(`${ FilesMapWebpackPlugin.pluginName }-afterEmit`, async function(compilation) {
       const map = {};    // 输出映射
       const chunks = {}; // 输出的模块
-
-      // 输出获取文件映射
-      const outputDir = options.path ?? output.path;
+      const { options: compilationOptions, chunks: compilationChunks, chunkGraph /* webpack5 */ } = compilation;
+      const { output, context } = compilationOptions;
+      const outputDir = options.path ?? output.path; // 输出获取文件映射
 
       for (const chunk of compilationChunks) {
-        const {
-          name,  // 模块名称
-          id,    // 模块id
-          files  // 模块输出路径
-        } = chunk;
-
-        // 获取模块的信息
-        const chunkFiles = files ? (Array.isArray(files) ? files : Array.from(files)) : [];
-
-        // 获取入口文件并格式化入口文件
-        const entry = chunkGraph
-          ? getFileEntryV5(chunkGraph.getChunkEntryModulesIterable(chunk), context) // webpack5
-          : getFileEntry(chunk.entryModule, context);                               // webpack4
-
-        // 模块id
-        const key = name ?? id;
+        const { name, id, files } = chunk; // 模块的名称、id、输出路径
+        const chunkFiles = files ? (Array.isArray(files) ? files : Array.from(files)) : []; // 获取模块的信息
+        const entry = chunkGraph                                                  // 获取入口文件并格式化入口文件
+          ? getFileEntry(chunkGraph.getChunkEntryModulesIterable(chunk), context) // webpack5
+          : getFileEntryV4(chunk.entryModule, context);                           // webpack4
+        const key = name ?? id; // 模块id
 
         chunks[key] = [];
 
-        if (chunkFiles && chunkFiles.length > 0) {
-          // 循环files
+        if (chunkFiles?.length) {
           for (const file of chunkFiles) {
+            const ext = getExt(file); // 获取文件扩展名
+
             chunks[key].push(formatPath(file));
-
-            // 获取文件扩展名
-            const ext = getExt(file);
-
-            if (!isPlainObject(map[ext])) {
-              map[ext] = {};
-            }
+            map[ext] ??= {};
 
             // 添加到映射
             map[ext][key] = {
@@ -153,8 +134,7 @@ class FilesMapWebpackPlugin {
       // 判断文件夹是否存在并写入文件
       const { outputFileSystem } = compiler;
       const writeFilePromise = outputFileSystem.promises
-        ? outputFileSystem.promises.writeFile
-        : util.promisify(outputFileSystem.writeFile);
+        ? outputFileSystem.promises.writeFile : util.promisify(outputFileSystem.writeFile);
       const mkdirPromise = createMkdirFunc.call(_this, outputFileSystem);
 
       await mkdirPromise(outputDir);

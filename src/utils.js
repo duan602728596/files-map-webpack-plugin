@@ -10,15 +10,6 @@ export function isNil(t) {
 }
 
 /**
- * 判断当前的参数是否为object
- * @param { any } t
- * @return { boolean }
- */
-export function isPlainObject(t) {
-  return typeof t === 'object' && Object.prototype.toString(t) === '[object Object]';
-}
-
-/**
  * 格式化文件路径
  * @param { string } p: 文件路径
  */
@@ -31,7 +22,7 @@ export function formatPath(p) {
  * @param { string | undefined } file
  * @return { string }
  */
-function getExt(file) {
+export function getExt(file) {
   const defaultExt = 'file';
 
   if (isNil(file)) {

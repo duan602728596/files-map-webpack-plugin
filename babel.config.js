@@ -14,6 +14,9 @@ module.exports = function(api) {
           bugfixes: true
         }
       ]
+    ],
+    plugins: [
+      '@babel/plugin-proposal-class-properties'
     ]
   };
 };
