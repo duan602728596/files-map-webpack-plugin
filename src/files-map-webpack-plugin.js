@@ -1,6 +1,6 @@
 import util from 'util';
 import path from 'path';
-import { isNil, isPlainObject } from './types';
+import { isNil, isPlainObject, formatPath } from './utils';
 
 class FilesMapWebpackPlugin {
   constructor(options = {}) {
@@ -49,11 +49,6 @@ class FilesMapWebpackPlugin {
     }
 
     return path.relative(context, request);
-  }
-
-  // 重写文件路径
-  formatPath(p) {
-    return p.replace(/\\/g, '/');
   }
 
   // 判断文件是否存在
@@ -112,7 +107,7 @@ class FilesMapWebpackPlugin {
 
   apply(compiler) {
     const _this = this;
-    const { pluginName, options, getFileEntry, getFileEntryV5, formatPath, getExt, createMkdirFunc } = this;
+    const { pluginName, options, getFileEntry, getFileEntryV5, getExt, createMkdirFunc } = this;
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
       const {
