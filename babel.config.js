@@ -10,13 +10,10 @@ module.exports = function(api) {
             browsers: ['node 10']
           },
           debug: false,
-          modules: 'commonjs'
+          modules: 'commonjs',
+          bugfixes: true
         }
       ]
-    ],
-    plugins: [
-      '@babel/plugin-proposal-nullish-coalescing-operator',
-      '@babel/plugin-proposal-optional-chaining'
     ]
   };
 };
