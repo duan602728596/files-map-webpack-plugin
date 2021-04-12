@@ -20,19 +20,13 @@ module.exports = {
     },
     sourceType: 'module'
   },
-  settings: {
-    react: {
-      version: 'detect'
-    }
-  },
+  plugins: ['import'],
   overrides: [
     {
       files: ['*.js', '*.jsx'],
-      parser: 'babel-eslint',
+      parser: '@babel/eslint-parser',
       parserOptions: {
-        babelOptions: {
-          configFile: './babel.config.js'
-        }
+        requireConfigFile: false
       }
     }
   ],
@@ -81,6 +75,12 @@ module.exports = {
     'require-await': 'error',                // 禁止使用不带 await 表达式的 async 函数
     // Variables
     'no-delete-var': 'error',                // 禁止删除变量
+    'no-label-var': 'error',                 // 禁用与变量同名的标签
+    'no-shadow': [                           // 禁止变量声明覆盖外层作用域的变量
+      'error',
+      { hoist: 'all' }
+    ],
+    'no-undef': 'error',                     // 禁用未声明的变量
     'no-use-before-define': 'error',         // 禁止定义前使用
     // Node.js and CommonJS
     'no-new-require': 'error',               // 禁止调用 require 时使用 new 操作符
@@ -141,10 +141,10 @@ module.exports = {
         next: 'return'
       }
     ],
-    quotes: ['error', 'single'],                // 强制使用一致的反勾号、双引号或单引号
-    semi: ['error', 'always'],                  // 要求或禁止使用分号代替 ASI
-    'space-before-blocks': ['error', 'always'], // 强制在块之前使用一致的空格
-    'space-before-function-paren': [            // 强制在 function 的左括号之前使用一致的空格
+    quotes: ['error', 'single', { avoidEscape: true }], // 强制使用一致的反勾号、双引号或单引号
+    semi: ['error', 'always'],                          // 要求或禁止使用分号代替 ASI
+    'space-before-blocks': ['error', 'always'],         // 强制在块之前使用一致的空格
+    'space-before-function-paren': [                    // 强制在 function 的左括号之前使用一致的空格
       'error',
       {
         anonymous: 'never',
@@ -170,6 +170,11 @@ module.exports = {
     'prefer-const': 'error',                       // 要求使用 const 声明那些声明后不再被修改的变量
     'object-shorthand': 'error',                   // 要求或禁止对象字面量中方法和属性使用简写语法
     'require-yield': 'error',                      // 要求 generator 函数内有 yield
-    'template-curly-spacing': ['error', 'always']  // 要求或禁止模板字符串中的嵌入表达式周围空格的使用
+    'template-curly-spacing': ['error', 'always'], // 要求或禁止模板字符串中的嵌入表达式周围空格的使用
+    // import
+    'import/no-unresolved': [ // 确保导入的模块可以解析为本地文件系统上的模块
+      'error',
+      { commonjs: true }
+    ]
   }
 };
