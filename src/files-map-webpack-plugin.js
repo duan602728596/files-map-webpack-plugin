@@ -16,28 +16,30 @@ class FilesMapWebpackPlugin {
     this.pluginName = FilesMapWebpackPlugin.pluginName;
   }
 
-  // 获取文件入口(webpack5)
-  getFileEntry(entryModules, context) {
+  // 获取文件入口
+  getFileEntry(chunkGraph, chunk, context) {
     let request = undefined;
 
-    for (const entryModule of entryModules) {
-      request ??= entryModule?.rawRequest ?? entryModule?.rootModule?.rawRequest;
-    }
+    if (chunkGraph) {
+      // webpack5
+      const entryModules = chunkGraph.getChunkEntryModulesIterable(chunk);
 
-    if (request) {
-      return path.relative(context, request);
-    }
-  }
+      for (const entryModule of entryModules) {
+        request ??= entryModule?.rawRequest ?? entryModule?.rootModule?.rawRequest;
+      }
+    } else {
+      // webpack4
+      const entryModule = chunk.entryModule;
 
-  // 获取文件入口(webpack4)
-  getFileEntryV4(entryModule, context) {
-    if (!entryModule?.dependencies?.length) {
-      return undefined;
-    }
+      if (!entryModule?.dependencies?.length) {
+        return undefined;
+      }
 
-    const dependencies = entryModule?.dependencies ?? [];
-    const request = dependencies[0]?.request     // webpack4
-      ?? dependencies[0]?.originModule?.request; // webpack4 async-module
+      const dependencies = entryModule?.dependencies ?? [];
+
+      request = dependencies[0]?.request           // webpack4
+        ?? dependencies[0]?.originModule?.request; // webpack4 async-module
+    }
 
     if (request) {
       return path.relative(context, request);
@@ -87,7 +89,7 @@ class FilesMapWebpackPlugin {
 
   apply(compiler) {
     const _this = this;
-    const { options, getFileEntryV4, getFileEntry, createMkdirFunc } = this;
+    const { options, getFileEntry, createMkdirFunc } = this;
 
     compiler.hooks.afterEmit.tapPromise(`${ FilesMapWebpackPlugin.pluginName }-afterEmit`, async function(compilation) {
       const map = {};    // 输出映射
@@ -97,12 +99,10 @@ class FilesMapWebpackPlugin {
       const outputDir = options.path ?? output.path; // 输出获取文件映射
 
       for (const chunk of compilationChunks) {
-        const { name, id, files } = chunk; // 模块的名称、id、输出路径
+        const { name, id, files } = chunk;                                                  // 模块的名称、id、输出路径
         const chunkFiles = files ? (Array.isArray(files) ? files : Array.from(files)) : []; // 获取模块的信息
-        const entry = chunkGraph                                                  // 获取入口文件并格式化入口文件
-          ? getFileEntry(chunkGraph.getChunkEntryModulesIterable(chunk), context) // webpack5
-          : getFileEntryV4(chunk.entryModule, context);                           // webpack4
-        const key = name ?? id; // 模块id
+        const entry = getFileEntry(chunkGraph, chunk, context);                             // 获取入口文件并格式化入口文件
+        const key = name ?? id;                                                             // 模块id
 
         chunks[key] = [];
 
