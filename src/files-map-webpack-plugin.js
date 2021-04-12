@@ -1,6 +1,6 @@
 import util from 'util';
 import path from 'path';
-import { isNil, isPlainObject, formatPath } from './utils';
+import { isPlainObject, formatPath, getExt } from './utils';
 
 class FilesMapWebpackPlugin {
   constructor(options = {}) {
@@ -92,22 +92,9 @@ class FilesMapWebpackPlugin {
     };
   }
 
-  // 获取文件扩展名
-  getExt(file) {
-    const defaultExt = 'file';
-
-    if (isNil(file)) {
-      return defaultExt;
-    }
-
-    const outputParseResult = path.parse(file);
-
-    return outputParseResult.ext ? outputParseResult.ext.substr(1) : defaultExt;
-  }
-
   apply(compiler) {
     const _this = this;
-    const { pluginName, options, getFileEntry, getFileEntryV5, getExt, createMkdirFunc } = this;
+    const { pluginName, options, getFileEntry, getFileEntryV5, createMkdirFunc } = this;
 
     compiler.hooks.afterEmit.tapPromise(`${ pluginName }-afterEmit`, async function(compilation) {
       const {
