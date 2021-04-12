@@ -21,36 +21,27 @@ class FilesMapWebpackPlugin {
     let request = undefined;
 
     for (const entryModule of entryModules) {
-      if (!request) {
-        request = entryModule?.rawRequest
-          ?? entryModule?.rootModule?.rawRequest;
-      }
+      request ??= entryModule?.rawRequest ?? entryModule?.rootModule?.rawRequest;
     }
 
-    if (!request) {
-      return undefined;
+    if (request) {
+      return path.relative(context, request);
     }
-
-    return path.relative(context, request);
   }
 
   // 获取文件入口(webpack4)
   getFileEntryV4(entryModule, context) {
-    const dependencies = entryModule?.dependencies ?? [];
-
-    if (dependencies.length === 0) {
+    if (!entryModule?.dependencies?.length) {
       return undefined;
     }
 
-    // 文件路径
+    const dependencies = entryModule?.dependencies ?? [];
     const request = dependencies[0]?.request     // webpack4
       ?? dependencies[0]?.originModule?.request; // webpack4 async-module
 
-    if (!request) {
-      return undefined;
+    if (request) {
+      return path.relative(context, request);
     }
-
-    return path.relative(context, request);
   }
 
   // 判断文件是否存在
