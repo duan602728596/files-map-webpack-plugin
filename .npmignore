@@ -27,5 +27,6 @@ babel.config.js
 .eslintrc.js
 .lintstagedrc.yml
 webpack.config.babel.js
+.husky
 
 .DS_Store
