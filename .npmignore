@@ -30,5 +30,6 @@ babel.config.js
 .lintstagedrc.yml
 webpack.config.babel.js
 .husky
+tsconfig.json
 
 .DS_Store
