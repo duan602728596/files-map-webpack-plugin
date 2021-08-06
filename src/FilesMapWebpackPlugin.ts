@@ -29,8 +29,6 @@ class FilesMapWebpackPlugin {
    */
   getFileEntry(chunkGraph: ChunkGraph, chunk: Chunk, context: string | undefined): string | undefined {
     const entryModules: Iterable<Module> = chunkGraph.getChunkEntryModulesIterable(chunk);
-    const rootModules: Array<Module> = chunkGraph.getChunkRootModules(chunk);
-
     let request: string | undefined = undefined;
 
     for (const entryModule of entryModules) {
@@ -38,6 +36,9 @@ class FilesMapWebpackPlugin {
     }
 
     if (!request) {
+      // 异步模块
+      const rootModules: Array<Module> = chunkGraph.getChunkRootModules(chunk);
+
       for (const rootModule of rootModules) {
         request ??= rootModule?.['request'];
       }
