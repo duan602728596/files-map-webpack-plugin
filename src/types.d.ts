@@ -29,3 +29,9 @@ export interface AccessPromiseFunc {
 export interface MkdirPromiseFunc {
   (arg0: string): Promise<void>;
 }
+
+export interface FS {
+  writeFilePromise: WriteFilePromiseFunc;
+  accessPromise: AccessPromiseFunc;
+  mkdirPromise: MkdirPromiseFunc;
+}

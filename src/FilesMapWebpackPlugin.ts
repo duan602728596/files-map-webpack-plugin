@@ -2,7 +2,7 @@ import { promisify } from 'util';
 import * as path from 'path';
 import type { Compiler, Compilation, WebpackOptionsNormalized, Chunk, ChunkGraph, Module } from 'webpack';
 import { getFileExt, formatPath } from './utils';
-import type { PluginOptions, OutputMap, OutputChunks, WriteFilePromiseFunc, AccessPromiseFunc, MkdirPromiseFunc } from './types';
+import type { PluginOptions, OutputMap, OutputChunks, AccessPromiseFunc, FS } from './types';
 
 class FilesMapWebpackPlugin {
   public options: {
@@ -19,6 +19,20 @@ class FilesMapWebpackPlugin {
       name: 'filesMap.json' // 输出文件名称
     }, options);
     this.pluginName = FilesMapWebpackPlugin.pluginName;
+  }
+
+  /**
+   * 获取文件系统
+   * @param { Compiler } compiler
+   */
+  getFs(compiler: Compiler): FS {
+    const { outputFileSystem: ofs }: Compiler = compiler;
+
+    return {
+      writeFilePromise: ofs?.['promises']?.writeFile ?? promisify(ofs.writeFile), // 写文件
+      accessPromise: ofs?.['promises']?.['access'] ?? promisify(ofs['access']),   // 判断文件是否存在
+      mkdirPromise: ofs?.['promises']?.mkdir ?? promisify(ofs.mkdir)              // 创建文件夹
+    };
   }
 
   /**
@@ -91,18 +105,14 @@ class FilesMapWebpackPlugin {
     }
 
     // 判断文件夹是否存在并写入文件
-    const { outputFileSystem: ofs }: Compiler = compiler;
-    const writeFilePromise: WriteFilePromiseFunc = ofs?.['promises']?.writeFile ?? promisify(ofs.writeFile); // 写文件
-    const accessPromise: AccessPromiseFunc = ofs?.['promises']?.['access'] ?? promisify(ofs['access']);      // 判断文件是否存在
-    const mkdirPromise: MkdirPromiseFunc = ofs?.['promises']?.mkdir ?? promisify(ofs.mkdir);                 // 创建文件夹
-
+    const fs: FS = this.getFs(compiler);
     const outputDir: string = this.options.path ?? output.path!; // 输出获取文件映射
 
-    if (!(await this.fileExists(accessPromise, outputDir))) {
-      await mkdirPromise(outputDir);
+    if (!(await this.fileExists(fs.accessPromise, outputDir))) {
+      await fs.mkdirPromise(outputDir);
     }
 
-    await writeFilePromise(
+    await fs.writeFilePromise(
       path.join(outputDir, this.options.name),
       JSON.stringify({ map: outputMap, chunks: outputChunks }, null, 2)
     );
