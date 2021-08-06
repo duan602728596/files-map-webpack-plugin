@@ -1,17 +1,15 @@
 # files-map-webpack-plugin
 
-生成源入口文件、入口名称和打包编译后的文件的映射。
+Generate the mapping of the source entry file, the entry name, and the packaged and compiled file.
 
-## 如何使用
+## How to use
 
 ```javascript
 // webpack.config
 import FilesMapWebpackPlugin from '@bbkkbkk/files-map-webpack-plugin';
 
 export default {
-  ...,
   plugins: [
-    ...,
     new FilesMapWebpackPlugin()
   ]
 };
@@ -21,5 +19,5 @@ export default {
 
 | 参数 | 类型   | 说明 |
 | ---  | ---    | ---  |
-| path | string | 输出的目录，默认输出到webpack配置的输出文件夹内。 |
-| name | string | 输出的文件名称，默认为filesMap.json。             |
+| path | string | The output directory is output to the output folder configured by webpack by default. |
+| name | string | The name of the output file, the default is filesMap.json. |
