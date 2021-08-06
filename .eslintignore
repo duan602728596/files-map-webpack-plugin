@@ -1,6 +1,9 @@
 # node
 node_modules
 
+.yarn/*
+.pnp.cjs
+
 # build
 lib
 example/dist

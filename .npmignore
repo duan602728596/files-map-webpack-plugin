@@ -6,6 +6,7 @@ package-lock.json
 # yarn
 yarn.lock
 yarn-error.log
+.yarn/*
 
 # webstorm
 .idea
@@ -25,6 +26,7 @@ babel.config.js
 .editorconfig
 .eslintrc.yml
 .eslintrc.js
+.eslintrc.cjs
 .lintstagedrc.yml
 webpack.config.babel.js
 .husky
