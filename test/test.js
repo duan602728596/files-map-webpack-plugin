@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
-import { expect } from 'chai';
-import webpack from 'webpack';
-import webpackConfig from './webpack.config';
+const fs = require('fs');
+const path = require('path');
+const { expect } = require('chai');
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config.js');
 
 function build() {
   const compiler = webpack(webpackConfig);
@@ -30,6 +30,7 @@ describe('files-map-webpack-plugin', function() {
     expect(hasFile).to.be.true;
 
     // 判断name是否正确
+    // eslint-disable-next-line import/no-unresolved
     const filesMap = require('./dist/filesMap.json');
     const { js } = filesMap.map;
 

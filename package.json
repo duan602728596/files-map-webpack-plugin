@@ -2,7 +2,7 @@
   "name": "@bbkkbkk/files-map-webpack-plugin",
   "version": "1.1.0",
   "description": "webpack入口文件映射。",
-  "main": "cjs.js",
+  "main": "dist/cjs.js",
   "homepage": "https://github.com/duan602728596/files-map-webpack-plugin",
   "license": "MIT",
   "repository": {
@@ -12,12 +12,15 @@
   "scripts": {
     "start": "rimraf dist && tsc --watch",
     "build": "rimraf dist && tsc",
-    "test": "rimraf test/dist && mocha --require @babel/register test/test.js --timeout 180000",
+    "example": "webpack --config=webpack.config.js",
+    "test": "rimraf test/dist && mocha test/test.js --timeout 180000",
     "eslint": "eslint ./ --fix"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.15",
-    "@babel/eslint-parser": "^7.13.14",
+    "@babel/core": "^7.15.0",
+    "@babel/eslint-parser": "^7.15.0",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
     "chai": "^4.3.4",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",

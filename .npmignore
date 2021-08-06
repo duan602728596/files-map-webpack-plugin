@@ -7,6 +7,8 @@ package-lock.json
 yarn.lock
 yarn-error.log
 .yarn/*
+.pnp.cjs
+.yarnrc.yml
 
 # webstorm
 .idea
@@ -21,6 +23,7 @@ src
 tests
 test
 example
+.husky
 .babelrc
 babel.config.js
 .editorconfig
@@ -29,7 +32,7 @@ babel.config.js
 .eslintrc.cjs
 .lintstagedrc.yml
 webpack.config.babel.js
-.husky
+webpack.config.js
 tsconfig.json
 
 .DS_Store

@@ -1,9 +1,9 @@
-import path from 'path';
-import FilesMapWebpackPlugin from '../cjs';
+const path = require('path');
+const FilesMapWebpackPlugin = require('../dist/cjs');
 
 const dir = path.join(__dirname, 'src');
 
-export default {
+module.exports = {
   mode: 'production',
   entry: {
     module0: path.join(dir, 'entry0.js'),

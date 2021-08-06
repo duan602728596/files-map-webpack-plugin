@@ -4,6 +4,6 @@ const text = 'This is text module.';
 
 output(text);
 
-import(/* webpackChunkName: 'asyncModule' */' ./asyncModule').then((t) => {
+import(/* webpackChunkName: 'asyncModule' */'./asyncModule').then((t) => {
   output(t);
 });

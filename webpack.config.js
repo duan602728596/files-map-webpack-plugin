@@ -1,10 +1,11 @@
-import path from 'path';
-import FilesMapWebpackPlugin from './src/files-map-webpack-plugin';
+const path = require('path');
+const FilesMapWebpackPlugin = require('./dist/cjs');
 
 const dir = path.join(__dirname, 'example');
 
-export default {
+module.exports = {
   mode: 'production',
+  target: ['web'],
   entry: {
     index: [path.join(dir, 'src/index.js')],
     text: [path.join(dir, 'src/text.js')]
