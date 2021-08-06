@@ -17,7 +17,7 @@ export default {
 
 ## API
 
-| 参数 | 类型   | 说明 |
-| ---  | ---    | ---  |
-| path | string | The output directory is output to the output folder configured by webpack by default. |
-| name | string | The name of the output file, the default is filesMap.json. |
+| parameter | type   | description |
+| ---       | ---    | ---         |
+| path      | string | The output directory is output to the output folder configured by webpack by default. |
+| name      | string | The name of the output file, the default is filesMap.json.                            |
