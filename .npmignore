@@ -17,6 +17,7 @@ yarn-error.log
 .npmignore
 .eslintignore
 .gitignore
+.gitattributes
 
 # packages
 src
