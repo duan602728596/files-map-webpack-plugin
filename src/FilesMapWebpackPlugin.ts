@@ -1,7 +1,7 @@
 import { promisify } from 'util';
 import * as path from 'path';
 import type { Compiler, Compilation, WebpackOptionsNormalized, Chunk, ChunkGraph, Module } from 'webpack';
-import { getFileExt, formatPath } from './utils';
+import { getFileExt, formatPath } from './utils.js';
 import type { PluginOptions, OutputMap, OutputChunks, AccessPromiseFunc, FS } from './types';
 
 class FilesMapWebpackPlugin {
