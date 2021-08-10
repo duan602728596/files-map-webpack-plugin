@@ -6,7 +6,7 @@ import type { ParsedPath } from 'path';
  * @param { any } o
  * @return { boolean }
  */
-export function isNil(o: any): boolean {
+export function isNil<T>(o: any): o is T {
   return o === undefined || o === null;
 }
 
@@ -26,11 +26,11 @@ export function formatPath(p: string): string {
 export function getFileExt(file: string | undefined): string {
   const defaultExt: string = 'file';
 
-  if (isNil(file)) {
+  if (isNil<undefined>(file)) {
     return defaultExt;
   }
 
-  const parseResult: ParsedPath = path.parse(file!);
+  const parseResult: ParsedPath = path.parse(file);
 
   return parseResult.ext ? parseResult.ext.substr(1) : defaultExt;
 }
