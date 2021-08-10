@@ -4,12 +4,12 @@
     "moduleResolution": "node",
     "locale": "zh-CN",
     "module": "commonjs",
-    "target": "ES2019",
+    "target": "ES2020",
     "newLine": "LF",
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "lib"
   },
   "exclude": [
     "node_modules"

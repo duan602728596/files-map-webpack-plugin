@@ -2,7 +2,11 @@
   "name": "@bbkkbkk/files-map-webpack-plugin",
   "version": "2.0.0",
   "description": "Webpack entry file mapping.",
-  "main": "dist/cjs.js",
+  "main": "lib/cjs.js",
+  "exports": {
+    "import": "./esm/FilesMapWebpackPlugin.js",
+    "default": "./lib/cjs.js"
+  },
   "homepage": "https://github.com/duan602728596/files-map-webpack-plugin",
   "license": "MIT",
   "repository": {
@@ -10,8 +14,8 @@
     "url": "git@github.com:duan602728596/files-map-webpack-plugin.git"
   },
   "scripts": {
-    "start": "rimraf dist && rimraf esm && tsc --watch",
-    "build": "rimraf dist && rimraf esm && tsc && tsc --project tsconfig.esm.json",
+    "start": "rimraf lib && rimraf esm && tsc --watch",
+    "build": "rimraf lib && rimraf esm && tsc && tsc --project tsconfig.esm.json",
     "example": "webpack --config=webpack.config.js",
     "test": "rimraf test/dist && mocha test/test.js --timeout 180000",
     "eslint": "eslint ./ --fix"

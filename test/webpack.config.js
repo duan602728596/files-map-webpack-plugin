@@ -1,5 +1,5 @@
 const path = require('path');
-const FilesMapWebpackPlugin = require('../dist/cjs');
+const FilesMapWebpackPlugin = require('../lib/cjs');
 
 const dir = path.join(__dirname, 'src');
 
