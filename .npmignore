@@ -35,5 +35,6 @@ babel.config.js
 webpack.config.babel.js
 webpack.config.js
 tsconfig.json
+tsconfig.esm.json
 
 .DS_Store

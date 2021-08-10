@@ -10,8 +10,8 @@
     "url": "git@github.com:duan602728596/files-map-webpack-plugin.git"
   },
   "scripts": {
-    "start": "rimraf dist && tsc --watch",
-    "build": "rimraf dist && tsc",
+    "start": "rimraf dist && rimraf esm && tsc --watch",
+    "build": "rimraf dist && rimraf esm && tsc && tsc --project tsconfig.esm.json",
     "example": "webpack --config=webpack.config.js",
     "test": "rimraf test/dist && mocha test/test.js --timeout 180000",
     "eslint": "eslint ./ --fix"
